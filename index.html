@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACAMPA · Assemblea d'Associats</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --blau-fosc: #1a5276;
+    --blau-mitja: #2980b9;
+    --verd: #27ae60;
+    --taronja: #e67e22;
+    --vermell: #c0392b;
+    --gris-fosc: #2c3e50;
+    --gris-clar: #ecf0f1;
+    --blanc: #ffffff;
+  }
+  
+  html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a1a;
+    overflow: hidden;
+  }
+  
+  .presentacio {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .diapositiva {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+  }
+  
+  .diapositiva.activa {
+    opacity: 1;
+    transform: translateX(0);
+    z-index: 10;
+  }
+  
+  .diapositiva.anterior {
+    transform: translateX(-100%);
+  }
+  
+  /* Estils per tipus de diapositiva */
+  .portada {
+    background: linear-gradient(135deg, var(--blau-fosc) 0%, var(--blau-mitja) 100%);
+    color: white;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .seccio {
+    background: linear-gradient(135deg, var(--verd) 0%, var(--blau-mitja) 100%);
+    color: white;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .contingut {
+    background: var(--blanc);
+    color: var(--gris-fosc);
+  }
+  
+  .contingut-blau {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+    color: var(--gris-fosc);
+  }
+  
+  .final {
+    background: linear-gradient(135deg, var(--blau-fosc) 0%, var(--verd) 100%);
+    color: white;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Tipografia */
+  h1 {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  
+  h2 {
+    font-size: 2.8em;
+    margin-bottom: 30px;
+    color: var(--blau-fosc);
+    border-bottom: 4px solid var(--verd);
+    padding-bottom: 15px;
+  }
+  
+  .portada h1, .seccio h1, .final h1 {
+    color: white;
+    border: none;
+    font-size: 4em;
+  }
+  
+  .subtitol {
+    font-size: 1.5em;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    font-weight: 300;
+  }
+  
+  h3 {
+    font-size: 1.8em;
+    color: var(--blau-fosc);
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  
+  p, li {
+    font-size: 1.3em;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  ul li {
+    padding: 10px 0 10px 40px;
+    position: relative;
+  }
+  
+  ul li::before {
+    content: "▸";
+    color: var(--verd);
+    font-size: 1.5em;
+    position: absolute;
+    left: 10px;
+    top: 8px;
+  }
+  
+  /* Portada específica */
+  .logo-portada {
+    font-size: 6em;
+    margin-bottom: 20px;
+  }
+  
+  .data-portada {
+    font-size: 1.2em;
+    margin-top: 40px;
+    opacity: 0.8;
+    font-style: italic;
+  }
+  
+  /* Caixes destacades */
+  .caixa {
+    background: white;
+    border-left: 6px solid var(--verd);
+    padding: 20px 25px;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  
+  .caixa-alerta {
+    border-left-color: var(--taronja);
+    background: #fff8e1;
+  }
+  
+  .caixa-info {
+    border-left-color: var(--blau-mitja);
+    background: #e3f2fd;
+  }
+  
+  /* Graella de targetes */
+  .graella {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .targeta {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-top: 4px solid var(--verd);
+    transition: transform 0.3s;
+  }
+  
+  .targeta:hover {
+    transform: translateY(-5px);
+  }
+  
+  .targeta h3 {
+    font-size: 1.4em;
+    margin-top: 0;
+    color: var(--blau-fosc);
+  }
+  
+  .targeta .icona {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  /* Taula de la Junta */
+  .taula-junta {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .taula-junta th {
+    background: var(--blau-fosc);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-size: 1.2em;
+  }
+  
+  .taula-junta td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    font-size: 1.15em;
+  }
+  
+  .taula-junta tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .taula-junta tr:hover {
+    background: #f8f9fa;
+  }
+  
+  .buit {
+    color: var(--taronja);
+    font-style: italic;
+  }
+  
+  /* Icones grans per seccions */
+  .icona-gran {
+    font-size: 5em;
+    margin-bottom: 20px;
+  }
+  
+  /* Llista amb icones */
+  .llista-icones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .item-icone {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  
+  .item-icone .emoji {
+    font-size: 2em;
+    margin-right: 15px;
+  }
+  
+  /* Navegació */
+  .navegacio {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    padding: 10px 15px;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  
+  .btn-nav {
+    background: var(--blau-fosc);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn-nav:hover {
+    background: var(--verd);
+    transform: scale(1.1);
+  }
+  
+  .btn-nav:disabled {
+    background: #bbb;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .contador {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    font-weight: bold;
+    color: var(--blau-fosc);
+    font-size: 1.1em;
+  }
+  
+  /* Barra de progrés */
+  .progres {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 5px;
+    background: var(--verd);
+    width: 0%;
+    transition: width 0.4s;
+    z-index: 200;
+  }
+  
+  /* Ajuda tecles */
+  .ajuda {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    z-index: 100;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  
+  .ajuda:hover { opacity: 1; }
+  
+  .ajuda kbd {
+    background: white;
+    color: black;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    margin: 0 3px;
+  }
+  
+  /* Responsiu */
+  @media (max-width: 768px) {
+    .diapositiva { padding: 30px 25px; }
+    h1 { font-size: 2em; }
+    h2 { font-size: 1.8em; }
+    p, li { font-size: 1em; }
+    .llista-icones { grid-template-columns: 1fr; }
+    .portada h1 { font-size: 2.5em; }
+    .ajuda { display: none; }
+  }
+  
+  /* Animació d'entrada dels elements */
+  .diapositiva.activa h1,
+  .diapositiva.activa h2,
+  .diapositiva.activa h3,
+  .diapositiva.activa p,
+  .diapositiva.activa li,
+  .diapositiva.activa .targeta,
+  .diapositiva.activa .caixa {
+    animation: fadeInUp 0.6s ease-out backwards;
+  }
+  
+  .diapositiva.activa h1 { animation-delay: 0.1s; }
+  .diapositiva.activa h2 { animation-delay: 0.1s; }
+  .diapositiva.activa h3 { animation-delay: 0.2s; }
+  .diapositiva.activa p, 
+  .diapositiva.activa li { animation-delay: 0.3s; }
+  .diapositiva.activa .targeta { animation-delay: 0.4s; }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="progres" id="progres"></div>
+
+<div class="presentacio" id="presentacio">
+
+  <!-- 1. PORTADA -->
+  <div class="diapositiva portada activa">
+    <div class="logo-portada">⚕️</div>
+    <h1>ACAMPA</h1>
+    <p class="subtitol">Associació Catalana de Malalties de Parkinson Atípiques</p>
+    <p style="font-size: 1.8em; margin-top: 30px;">Reunió d'Associats/des</p>
+    <p class="16-setembre-2026"></p>
+  </div>
+
+  <!-- 2. ÍNDEX -->
+  <div class="diapositiva contingut">
+    <h2>📋 Ordre del dia</h2>
+    <div class="graella">
+      <div class="targeta">
+        <div class="icona">🏛️</div>
+        <h3>1. L'Entitat</h3>
+        <p>Orígens, Junta Directiva i estructura</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">📑</div>
+        <h3>2. Documents i gestió</h3>
+        <p>Estatuts, reglament, comissions i administració</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">💰</div>
+        <h3>3. Captació de fons</h3>
+        <p>Subvencions, donacions i socis</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🎁</div>
+        <h3>4. Recursos i activitats</h3>
+        <p>Kit benvinguda, Guia pràctica i propostes</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">👨‍⚕️</div>
+        <h3>5. Comitè Clínic Assessor</h3>
+        <p>Composició i funcions</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🚀</div>
+        <h3>6. Full de ruta</h3>
+        <p>Propers passos i torn obert de preguntes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. SECCIÓ: L'ENTITAT -->
+  <div class="diapositiva seccio">
+    <div class="icona-gran">🏛️</div>
+    <h1>Bloc 1</h1>
+    <p class="subtitol">L'Entitat</p>
+  </div>
+
+  <!-- 4. ORÍGENS -->
+  <div class="diapositiva contingut">
+    <h2>🌱 Orígens de l'entitat</h2>
+    <div class="caixa caixa-info">
+      <h3>Per què ACAMPA?</h3>
+      <p>Neix de la necessitat de donar resposta a les <strong>malalties de Parkinson atípiques</strong>, unes grans desconegudes que afecten famílies senceres sense els recursos ni la informació adequats.</p>
+    </div>
+    <ul>
+      <li><strong>Una realitat invisible:</strong> el Parkinson atípic és sovint mal diagnosticat i poc estudiat.</li>
+      <li><strong>Famílies aïllades:</strong> mancades d'acompanyament específic i d'informació pràctica.</li>
+      <li><strong>Una resposta col·lectiva:</strong> associar-nés per fer visible allò que el sistema no veu.</li>
+      <li><strong>Un projecte amb ànima:</strong> construir comunitat, coneixement i suport mutu.</li>
+    </ul>
+  </div>
+
+  <!-- 5. JUNTA DIRECTIVA -->
+  <div class="diapositiva contingut">
+    <h2>👥 Junta Directiva actual</h2>
+    <p style="margin-bottom: 20px;">L'òrgan de govern de l'entitat, format per associats voluntaris.</p>
+    <table class="taula-junta">
+      <thead>
+        <tr>
+          <th>Càrrec</th>
+          <th>Persona</th>
+          <th>Funcions principals</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>👤 President/a</strong></td>
+          <td>[Nom]</td>
+          <td>Representació legal, impuls estratègic</td>
+        </tr>
+        <tr>
+          <td><strong>📝 Secretari/ària</strong></td>
+          <td>[Nom]</td>
+          <td>Actes, comunicacions, custòdia documental</td>
+        </tr>
+        <tr>
+          <td><strong>💼 Tresorer/a</strong></td>
+          <td>[Nom]</td>
+          <td>Comptes, pressupostos, tresoreria</td>
+        </tr>
+        <tr>
+          <td><strong>🗳️ Vocal 1</strong></td>
+          <td>[Nom]</td>
+          <td>Suport a projectes i activitats</td>
+        </tr>
+        <tr>
+          <td><strong>🗳️ Vocal 2</strong></td>
+          <td>[Nom]</td>
+          <td>Suport a projectes i activitats</td>
+        </tr>
+        <tr>
+          <td><strong>🗳️ Vocal 3</strong></td>
+          <td class="buit">⚠️ Pendent de cobrir</td>
+          <td class="buit">Per definir</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6. NECESSITATS A LA JUNTA -->
+  <div class="diapositiva contingut-blau">
+    <h2>⚠️ Necessitem cobrir espais</h2>
+    <div class="caixa caixa-alerta">
+      <p><strong>La Junta és el motor de l'entitat.</strong> Sense persones compromeses, cap projecte tira endavant.</p>
+    </div>
+    <h3>Perfiles que necessitem:</h3>
+    <div class="llista-icones">
+      <div class="item-icone">
+        <span class="emoji">👤</span>
+        <div><strong>Vocal 3</strong><br><small>Per completar la Junta</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">📣</span>
+        <div><strong>Responsable de comunicació</strong><br><small>Xarxes, web, premsa</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🤝</span>
+        <div><strong>Responsable de voluntariat</strong><br><small>Coordinació de voluntaris</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">💡</span>
+        <div><strong>Responsable de projectes</strong><br><small>Subvencions i nous programes</small></div>
+      </div>
+    </div>
+    <p style="margin-top: 25px; font-style: italic; text-align: center; color: var(--blau-fosc);">
+      🙋‍♀️ <strong>Et vols sumar?</strong> Parla amb qualsevol membre de la Junta després de l'assemblea.
+    </p>
+  </div>
+
+  <!-- 7. SECCIÓ: DOCUMENTS I GESTIÓ -->
+  <div class="diapositiva seccio">
+    <div class="icona-gran">📑</div>
+    <h1>Bloc 2</h1>
+    <p class="subtitol">Documents i gestió</p>
+  </div>
+
+  <!-- 8. DOCUMENTS PRECEPTIUS -->
+  <div class="diapositiva contingut">
+    <h2>📚 Documents preceptius de l'entitat</h2>
+    <p style="margin-bottom: 20px;">Marc legal i estratègic que regeix el funcionament d'ACAMPA.</p>
+    <div class="graella">
+      <div class="targeta">
+        <div class="icona">📜</div>
+        <h3>Estatuts</h3>
+        <p>Normes fonamentals: finalitat, òrgans de govern, drets i deures dels associats.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">📖</div>
+        <h3>Reglament de Règim Intern</h3>
+        <p>Desenvolupa els estatuts: procediments, funcionament intern, comissions.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🎯</div>
+        <h3>Pla Estratègic</h3>
+        <p>Visió, missió, objectius a mig termini i full de ruta.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">📊</div>
+        <h3>Memòries anuals</h3>
+        <p>Activitats, comptes i resultats de cada exercici.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. COMISSIONS -->
+  <div class="diapositiva contingut-blau">
+    <h2>🗂️ Comissions de treball</h2>
+    <p style="margin-bottom: 20px;">Grups de treball especialitzats que donen vida al dia a dia de l'entitat.</p>
+    <div class="graella">
+      <div class="targeta">
+        <div class="icona">🤝</div>
+        <h3>Comissió d'Acollida</h3>
+        <p>Primer contacte amb noves famílies i associats.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">📣</div>
+        <h3>Comissió de Comunicació</h3>
+        <p>Web, xarxes socials, butlletins, relació amb premsa.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🎉</div>
+        <h3>Comissió d'Activitats</h3>
+        <p>Organització de trobades, jornades i actes.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">💰</div>
+        <h3>Comissió de Finançament</h3>
+        <p>Subvencions, donacions, campanyes de captació.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. VOLUNTARIAT -->
+  <div class="diapositiva contingut">
+    <h2>🙋 Voluntariat</h2>
+    <div class="caixa caixa-info">
+      <p>El voluntariat és el <strong>cor d'ACAMPA</strong>. Sense la dedicació desinteressada de moltes persones, cap dels nostres projectes seria possible.</p>
+    </div>
+    <h3>Àmbits on necessitem voluntaris/es:</h3>
+    <div class="llista-icones">
+      <div class="item-icone">
+        <span class="emoji">🚗</span>
+        <div><strong>Acompanyament</strong><br><small>Visites, trasllats, companyia</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">📞</span>
+        <div><strong>Suport telefònic</strong><br><small>Escolta i orientació</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">💻</span>
+        <div><strong>Suport administratiu</strong><br><small>Oficina, gestions, digitalització</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">📢</span>
+        <div><strong>Difusió i sensibilització</strong><br><small>Parlar d'ACAMPA arreu</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🎨</span>
+        <div><strong>Tallers i activitats</strong><br><small>Dinamització de grups</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">📸</span>
+        <div><strong>Comunicació visual</strong><br><small>Fotografia, vídeo, disseny</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. ASPECTES ADMINISTRATIUS -->
+  <div class="diapositiva contingut-blau">
+    <h2>🏢 Aspectes administratius</h2>
+    <h3>Interns</h3>
+    <ul>
+      <li>Llibre registre d'associats/des</li>
+      <li>Llibre d'actes de la Junta i assemblees</li>
+      <li>Comptabilitat i pressupostos anuals</li>
+      <li>Gestió de socis/es i quotes</li>
+      <li>Protecció de dades (RGPD) i documentació sensible</li>
+    </ul>
+    <h3>Amb organismes oficials</h3>
+    <ul>
+      <li><strong>Registre d'Associacions</strong> de la Generalitat</li>
+      <li><strong>Agència Tributària:</strong> model 036, declarations trimestrals, anuals, model 182</li>
+      <li><strong>Ajuntament:</strong> padró d'entitats, llicències d'actes</li>
+      <li><strong>Drets Socials / Departament de Salut:</strong> convenis i subvencions</li>
+    </ul>
+  </div>
+
+  <!-- 12. RELACIONS EXTERNES -->
+  <div class="diapositiva contingut">
+    <h2>🤝 Col·laboracions externes</h2>
+    <div class="graella">
+      <div class="targeta">
+        <div class="icona">🏥</div>
+        <h3>Hospitals</h3>
+        <p>Col·laboració amb neurologia, pal·liatius i treball social per detectar i acompanyar famílies.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🩺</div>
+        <h3>Centres d'Atenció Primària (CAP)</h3>
+        <p>Coordinació amb metges de capçalera per a la detecció precoç i derivació.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🎓</div>
+        <h3>Escoles i universitats</h3>
+        <p>Pràctiques de treball social, psicologia, fisioteràpia, teràpia ocupacional...</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🏛️</div>
+        <h3>Altres associacions</h3>
+        <p>Xarxa amb entitats del tercer sector per compartir recursos i fer campanyes conjuntes.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">📰</div>
+        <h3>Mitjans de comunicació</h3>
+        <p>Premsa, ràdio, televisió i digitals per visibilitzar les malalties atípiques.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">💼</div>
+        <h3>Administracions</h3>
+        <p>Generalitat, diputacions, ajuntaments i ministeris per a subvencions i convenis.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. SECCIÓ: CAPTACIÓ DE FONS -->
+  <div class="diapositiva seccio">
+    <div class="icona-gran">💰</div>
+    <h1>Bloc 3</h1>
+    <p class="subtitol">Captació de fons</p>
+  </div>
+
+  <!-- 14. SUBVENCIONS -->
+  <div class="diapositiva contingut">
+    <h2>📝 Subvencions</h2>
+    <div class="caixa caixa-info">
+      <p>Les subvencions són una font clau de finançament, però requereixen <strong>constància, rigor i anticipació</strong>.</p>
+    </div>
+    <h3>Administracions convocants:</h3>
+    <ul>
+      <li><strong>Generalitat de Catalunya:</strong> Departament de Drets Socials, Salut, Treball</li>
+      <li><strong>Diputació de Barcelona:</strong> convocatòries anuals</li>
+      <li><strong>Ajuntaments:</strong> subvencions locals d'activitats i funcionament</li>
+      <li><strong>Ministeri de Drets Socials:</strong> IRPF, programes estatals</li>
+      <li><strong>Fundacions bancàries:</strong> La Caixa, CatalunyaCaixa, etc.</li>
+    </ul>
+    <h3>Clau de l'èxit:</h3>
+    <p>📅 <strong>Calendari de subvencions</strong> → planificar amb mesos d'antelació · 📊 <strong>Justificació rigorosa</strong> → memòria econòmica impecable · 🎯 <strong>Projectes ben definits</strong> → objectius mesurables</p>
+  </div>
+
+  <!-- 15. DONACIONS I SOCIS -->
+  <div class="diapositiva contingut-blau">
+    <h2>❤️ Donacions i socis/es</h2>
+    <h3>Socis i sòcies (quotes periòdiques)</h3>
+    <ul>
+      <li>Base estable i previsible de l'entitat.</li>
+      <li>Campanyes de captació contínues: web, actes, xarxes, hospitals.</li>
+      <li>Desgravació fiscal per als donants (fins al 80% en alguns trams).</li>
+    </ul>
+    <h3>Donacions puntuals</h3>
+    <ul>
+      <li>Donatius particulars (empreses, famílies, particulars).</li>
+      <li>Campanyes específiques: "Apadrina una família", "Marató ACAMPA".</li>
+      <li>Llegats i herències solidàries.</li>
+    </ul>
+    <h3>Activitats de captació</h3>
+    <ul>
+      <li>Sopars solidaris, concerts benèfics, curses populars.</li>
+      <li>Venda de merchandising solidari.</li>
+      <li>Col·laboracions amb empreses (mecenatge, RSC).</li>
+    </ul>
+  </div>
+
+  <!-- 16. SECCIÓ: RECURSOS I ACTIVITATS -->
+  <div class="diapositiva seccio">
+    <div class="icona-gran">🎁</div>
+    <h1>Bloc 4</h1>
+    <p class="subtitol">Recursos i activitats</p>
+  </div>
+
+  <!-- 17. KIT BENVINGUDA -->
+  <div class="diapositiva contingut">
+    <h2>📦 Kit de Benvinguda</h2>
+    <div class="caixa">
+      <p>Primer contacte material amb cada nova família associada. <strong>Un abraçada en forma de paquet</strong>.</p>
+    </div>
+    <h3>Què inclou?</h3>
+    <div class="llista-icones">
+      <div class="item-icone">
+        <span class="emoji">📖</span>
+        <div><strong>Guia pràctica</strong><br><small>Per a famílies i cuidadors</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">📇</span>
+        <div><strong>Directori de recursos</strong><br><small>Centres, professionals, ajudes</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">📝</span>
+        <div><strong>Carta de benvinguda</strong><br><small>Signada per la presidència</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🎗️</span>
+        <div><strong>Material identitari</strong><br><small>Pin, díptics, targetes</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">📞</span>
+        <div><strong>Contactes directes</strong><br><small>Telèfons d'acompanyament</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🌐</span>
+        <div><strong>Accés a la web privada</strong><br><small>Zona d'associats</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 18. GUIA PRÀCTICA -->
+  <div class="diapositiva contingut-blau">
+    <h2>📘 Guia pràctica per a famílies i cuidadors</h2>
+    <div class="caixa caixa-info">
+      <p>El nostre <strong>recurs estrella</strong>. Un document viu, actualitzat constantment, que respon les preguntes reals de qui conviu amb una malaltia de Parkinson atípica.</p>
+    </div>
+    <h3>Continguts principals:</h3>
+    <ul>
+      <li><strong>Què és el Parkinson atípic:</strong> explicació clara, diferències amb el Parkinson clàssic.</li>
+      <li><strong>Recorregut diagnòstic:</strong> proves, especialistes, segones opinions.</li>
+      <li><strong>Drets socials:</strong> grau de dependència, prestacions, ajudes.</li>
+      <li><strong>Recursos assistencials:</strong> centres de dia, residències, atenció domiciliària.</li>
+      <li><strong>Cura del cuidador:</strong> prevenció de la sobrecàrrega, grups de suport.</li>
+      <li><strong>Aspectes legals:</strong> incapacitat, tutelles, testaments, protecció de dades.</li>
+      <li><strong>Final de vida:</strong> cures pal·liatives, voluntats anticipades.</li>
+    </ul>
+  </div>
+
+  <!-- 19. POSSIBLES ACTIVITATS -->
+  <div class="diapositiva contingut">
+    <h2>🎯 Possibles activitats a oferir</h2>
+    <div class="graella">
+      <div class="targeta">
+        <div class="icona">👥</div>
+        <h3>Grups de suport</h3>
+        <p>Trobades periòdiques per a cuidadors/es i familiars.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🧠</div>
+        <h3>Xerrades formatives</h3>
+        <p>Sobre la malaltia, drets, recursos, aspectes legals.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🧘</div>
+        <h3>Tallers terapèutics</h3>
+        <p>Fisioteràpia, logopèdia, musicoteràpia, artteràpia.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🚶</div>
+        <h3>Activitats físiques</h3>
+        <p>Ioga adaptat, tai-txi, caminades saludables.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🎨</div>
+        <h3>Tallers ocupacionals</h3>
+        <p>Manualitats, cuina, memòria, estimulació cognitiva.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">🏖️</div>
+        <h3>Lleure i respir</h3>
+        <p>Colònies, sortides, programes de respir per a cuidadors.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">💻</div>
+        <h3>Teleassistència</h3>
+        <p>Acompanyament telefònic i videotes.</p>
+      </div>
+      <div class="targeta">
+        <div class="icona">📚</div>
+        <h3>Formació de voluntaris</h3>
+        <p>Escola de voluntariat ACAMPA.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 20. SECCIÓ: COMITÈ CLÍNIC -->
+  <div class="diapositiva seccio">
+    <div class="icona-gran">👨‍⚕️</div>
+    <h1>Bloc 5</h1>
+    <p class="subtitol">Comitè Clínic Assessor</p>
+  </div>
+
+  <!-- 21. COMITÈ CLÍNIC -->
+  <div class="diapositiva contingut">
+    <h2>👨‍⚕️ El Comitè Clínic Assessor</h2>
+    <div class="caixa caixa-info">
+      <p>Un òrgan consultiu format per <strong>professionals de la salut</strong> que assessoren la Junta en matèria clínica, assistencial i de recerca. <strong>No decideix, però il·lumina les decisions.</strong></p>
+    </div>
+    <h3>Per què "Clínic" i no "Mèdic"?</h3>
+    <p style="font-size: 1.2em;">Perquè la visió que necessitem és <strong>multidisciplinària</strong>: no només metges, sinó tots els professionals que acompanyen les famílies en el seu recorregut.</p>
+    <h3>Composició actual:</h3>
+    <div class="llista-icones">
+      <div class="item-icone">
+        <span class="emoji">🧠</span>
+        <div><strong>Neuròlegs/ogues</strong><br><small>Fins a 5 especialistes</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">👩‍⚕️</span>
+        <div><strong>Infermer/a (ATS)</strong><br><small>Visió assistencial</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🤲</span>
+        <div><strong>Treballadora social</strong><br><small>Recursos i drets</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🏃</span>
+        <div><strong>Fisioterapeuta</strong><br><small>Rehabilitació</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🧘</span>
+        <div><strong>Psicòleg/òloga</strong><br><small>Suport emocional</small></div>
+      </div>
+      <div class="item-icone">
+        <span class="emoji">🍎</span>
+        <div><strong>Nutricionista</strong><br><small>Alimentació i salut</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 22. FUNCIONS COMITÈ -->
+  <div class="diapositiva contingut-blau">
+    <h2>🎯 Funcions del Comitè Clínic</h2>
+    <ul>
+      <li><strong>Assessorar la Junta</strong> en matèria clínica i assistencial.</li>
+      <li><strong>Validar continguts</strong> tècnics de la Guia pràctica i altres publicacions.</li>
+      <li><strong>Proposar activitats</strong> formatives i terapèutiques basades en evidència.</li>
+      <li><strong>Orientar famílies</strong> en casos complexos (a petició de l'equip d'acollida).</li>
+      <li><strong>Col·laborar en recerca</strong> i difusió de coneixement sobre Parkinson atípic.</li>
+      <li><strong>Formar voluntaris</strong> en aspectes sanitaris bàsics.</li>
+      <li><strong>Representar ACAMPA</strong> en fòrums clínics i científics.</li>
+    </ul>
+    <div class="caixa" style="margin-top: 25px;">
+      <p>📅 <strong>Reunions:</strong> trimestrals (presencials o telemàtiques) · 📝 <strong>Actes:</strong> recollides a la memòria anual · 🤝 <strong>Coordinació:</strong> amb la vocalia de projectes</p>
+    </div>
+  </div>
+
+  <!-- 23. SECCIÓ: FULL DE RUTA -->
+  <div class="diapositiva seccio">
+    <div class="icona-gran">🚀</div>
+    <h1>Bloc 6</h1>
+    <p class="subtitol">Full de ruta i properes passes</p>
+  </div>
+
+  <!-- 24. FULL DE RUTA -->
+  <div class="diapositiva contingut">
+    <h2>🗺️ Full de ruta 2025-2026</h2>
+    <h3>🔹 Curt termini (pròxims 3 mesos)</h3>
+    <ul>
+      <li>Cobrir la vacant de Vocal 3 a la Junta.</li>
+      <li>Constituir formalment les comissions de treball.</li>
+      <li>Actualitzar la Guia pràctica (nova edició).</li>
+      <li>Reactivar el calendari de subvencions.</li>
+    </ul>
+    <h3>🔸 Mig termini (6-12 mesos)</h3>
+    <ul>
+      <li>Posar en marxa els grups de suport per a cuidadors.</li>
+      <li>Signar convenis amb almenys 2 hospitals i 1 CAP.</li>
+      <li>Estrenar la nova web amb zona privada d'associats.</li>
+      <li>Organitzar la 1a Jornada ACAMPA sobre Parkinson atípic.</li>
+    </ul>
+    <h3>🔷 Llarg termini (1-2 anys)</h3>
+    <ul>
+      <li>Impulsar un programa propi d'acompanyament domiciliari.</li>
+      <li>Col·laborar en projectes de recerca clínica.</li>
+      <li>Ampliar la presència territorial a noves comarques.</li>
+    </ul>
+  </div>
+
+  <!-- 25. TORN OBERT -->
+  <div class="diapositiva contingut-blau">
+    <h2>💬 Torn obert de preguntes</h2>
+    <div style="text-align: center; margin: 40px 0;">
+      <div style="font-size: 5em;">🙋‍♀️🙋‍♂️</div>
+      <p style="font-size: 1.5em; margin-top: 20px; color: var(--blau-fosc);">
+        <strong>La vostra veu és el més important.</strong>
+      </p>
+      <p style="font-size: 1.3em; margin-top: 20px;">
+        Preguntes, suggeriments, propostes, voluntats de col·laborar...<br>
+        <em>Tot suma. Tot compta.</em>
+      </p>
+    </div>
+    <div class="caixa caixa-info">
+      <p>📝 <strong>Recordeu:</strong> les actes de l'assemblea es posaran a disposició de tots els associats a la zona privada de la web en els pròxims 15 dies.</p>
+    </div>
+  </div>
+
+  <!-- 26. FINAL -->
+  <div class="diapositiva final">
+    <div class="logo-portada">🙏</div>
+    <h1>Gràcies</h1>
+    <p class="subtitol">Per la vostra confiança, el vostre temps i el vostre compromís.</p>
+    <p style="font-size: 1.5em; margin-top: 40px; font-style: italic;">
+      "Sols som poc. Junts, som ACAMPA."
+    </p>
+    <p class="data-portada">
+      📧 info@acampa.cat<br>
+      ⚕️ Associació Catalana de Malalties de Parkinson Atípiques
+    </p>
+  </div>
+
+</div>
+
+<!-- Navegació -->
+<div class="ajuda">
+  <kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>F</kbd> pantalla completa · <kbd>Home</kbd> inici
+</div>
+
+<div class="navegacio">
+  <button class="btn-nav" id="btnInici" title="Inici">⏮</button>
+  <button class="btn-nav" id="btnAnt" title="Anterior">◀</button>
+  <div class="contador"><span id="actual">1</span> / <span id="total">26</span></div>
+  <button class="btn-nav" id="btnSeg" title="Següent">▶</button>
+  <button class="btn-nav" id="btnFinal" title="Final">⏭</button>
+  <button class="btn-nav" id="btnPantalla" title="Pantalla completa">⛶</button>
+</div>
+
+<script>
+  const diapositives = document.querySelectorAll('.diapositiva');
+  const total = diapositives.length;
+  let actual = 0;
+  
+  document.getElementById('total').textContent = total;
+  
+  function mostrarDiapositiva(n) {
+    if (n < 0 || n >= total) return;
+    
+    diapositives[actual].classList.remove('activa');
+    diapositives[actual].classList.add('anterior');
+    
+    actual = n;
+    
+    // Esborrar 'anterior' de totes i marcar la nova
+    diapositives.forEach((d, i) => {
+      d.classList.remove('anterior');
+      if (i < actual) d.classList.add('anterior');
+    });
+    
+    diapositives[actual].classList.add('activa');
+    document.getElementById('actual').textContent = actual + 1;
+    
+    // Barra de progrés
+    const progres = ((actual + 1) / total) * 100;
+    document.getElementById('progres').style.width = progres + '%';
+    
+    // Botons
+    document.getElementById('btnAnt').disabled = actual === 0;
+    document.getElementById('btnInici').disabled = actual === 0;
+    document.getElementById('btnSeg').disabled = actual === total - 1;
+    document.getElementById('btnFinal').disabled = actual === total - 1;
+    
+    // Scroll a dalt de la diapositiva
+    diapositives[actual].scrollTop = 0;
+  }
+  
+  document.getElementById('btnAnt').addEventListener('click', () => mostrarDiapositiva(actual - 1));
+  document.getElementById('btnSeg').addEventListener('click', () => mostrarDiapositiva(actual + 1));
+  document.getElementById('btnInici').addEventListener('click', () => mostrarDiapositiva(0));
+  document.getElementById('btnFinal').addEventListener('click', () => mostrarDiapositiva(total - 1));
+  
+  document.getElementById('btnPantalla').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  
+  // Navegació amb teclat
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      mostrarDiapositiva(actual + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      mostrarDiapositiva(actual - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      mostrarDiapositiva(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      mostrarDiapositiva(total - 1);
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    } else if (e.key === 'Escape' && document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+  });
+  
+  // Navegació per swipe (tàctil)
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  
+  document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) mostrarDiapositiva(actual + 1);
+      else mostrarDiapositiva(actual - 1);
+    }
+  });
+  
+  // Inicialitzar
+  mostrarDiapositiva(0);
+</script>
+
+</body>
+</html>
