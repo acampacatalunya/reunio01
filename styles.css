@@ -411,3 +411,57 @@ body {
     backdrop-filter: blur(4px);
     font-weight: 500;
 }
+
+/* ============================================================
+   ESTILS PER AL FORMULARI I CODI QR (Torn Obert)
+   ============================================================ */
+
+.qr-container {
+    margin: 2em auto;
+    padding: 1.5em;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    max-width: 250px;
+    border: 2px solid var(--color-light);
+}
+
+.qr-image {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.qr-text {
+    margin-top: 1em;
+    font-size: 0.9em;
+    color: var(--color-secondary);
+    font-weight: 500;
+}
+
+.form-button {
+    display: inline-block;
+    margin-top: 1.5em;
+    padding: 0.9em 2.5em;
+    background-color: var(--color-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 8px rgba(44, 82, 130, 0.25);
+}
+
+.form-button:hover {
+    background-color: var(--color-accent);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(44, 82, 130, 0.35);
+}
+
+.form-button:active {
+    transform: translateY(-1px);
+}

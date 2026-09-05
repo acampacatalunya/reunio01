@@ -384,11 +384,14 @@ const presentationData = {
                 "Ampliar la presència territorial a noves comarques."
             ]
         },
-        // DIAPOSITIVA 25: Torn obert
+        // DIAPOSITIVA: Torn obert de preguntes (amb Formulari i QR)
         {
             type: "tancament-simple",
             title: "Torn obert de preguntes",
-            text: "🙋‍♀️🙋‍♂️ La vostra veu és el més important.<br><br>Preguntes, suggeriments, propostes, voluntats de col·laborar... <b>Tot suma. Tot compta.</b><br><br>📝 <i>Recordeu: les actes de l'assemblea es posaran a disposició de tots els associats a la zona privada de la web en els pròxims 15 dies.</i>"
+            text: "🙋‍♀️🙋‍♂️ La vostra veu és el més important.<br><br>Preguntes, suggeriments, propostes, voluntats de col·laborar... <b>Tot suma. Tot compta.</b><br><br>📝 <i>Recordeu: les actes de l'assemblea es posaran a disposició de tots els associats a la zona privada de la web en els pròxims 15 dies.</i>",
+            qrCode: "https://acampacatalunya.github.io/formulari/precspropostes.svg",
+            buttonLink: "https://ja.cat/acampa_precspropostes",
+            buttonText: "📋 Enviar pregunta o proposta a la Junta"
         },
         // DIAPOSITIVA 26: Gràcies
         {

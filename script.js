@@ -243,14 +243,28 @@ function renderPresentation() {
                 break;
 
             case 'tancament-simple':
+                // Genera el codi QR si existeix la propietat
+                const qrHtml = slide.qrCode 
+                    ? `<div class="qr-container">
+                         <img src="${slide.qrCode}" alt="Codi QR del formulari" class="qr-image">
+                         <p class="qr-text">Escaneja el codi QR amb el mòbil</p>
+                       </div>` 
+                    : '';
+                
+                // Genera el botó d'enllaç si existeix la propietat
+                const buttonHtml = slide.buttonLink 
+                    ? `<a href="${slide.buttonLink}" target="_blank" class="form-button">${slide.buttonText || 'Obrir formulari'}</a>` 
+                    : '';
+
                 html = `
                     <h1 class="slide-title">${slide.title}</h1>
-                    <div class="content-area" style="text-align: center; font-size: 1.3em; line-height: 1.8; margin-top: 2em;">
+                    <div class="content-area" style="text-align: center; font-size: 1.2em; line-height: 1.8; margin-top: 1em;">
                         ${slide.text}
+                        ${qrHtml}
+                        ${buttonHtml}
                     </div>
                 `;
                 break;
-
             case 'gracies':
                 html = `
                     <h1 class="slide-title" style="font-size: 3em;">${slide.title}</h1>
