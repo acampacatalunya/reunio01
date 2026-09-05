@@ -1,0 +1,413 @@
+:root {
+    --color-primary: #2c5282;
+    --color-secondary: #4a5568;
+    --color-accent: #667eea;
+    --color-bg: #f7fafc;
+    --color-text: #2d3748;
+    --color-light: #edf2f7;
+    --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --border-radius: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-main);
+    background: linear-gradient(135deg, var(--color-accent) 0%, #764ba2 100%);
+    color: var(--color-text);
+    overflow: hidden;
+    height: 100vh;
+}
+
+.slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: white;
+    padding: 3em 4em;
+    display: none;
+    overflow-y: auto;
+    animation: fadeIn 0.4s ease;
+}
+
+.slide.active { display: flex; flex-direction: column; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Elements comuns */
+.logo-header {
+    width: 120px;
+    height: auto;
+    margin-bottom: 1em;
+}
+
+.slide-title {
+    color: var(--color-primary);
+    font-size: 2.2em;
+    margin-bottom: 0.3em;
+    text-align: center;
+}
+
+.slide-subtitle {
+    color: var(--color-secondary);
+    font-size: 1.3em;
+    text-align: center;
+    font-weight: normal;
+    margin-bottom: 2em;
+}
+
+.content-area {
+    max-width: 1000px; /* Limita l'amplada perquè no toqui el marge dret */
+    margin: 0 auto;
+    width: 100%;
+    padding-right: 2em; /* Espai de seguretat addicional a la dreta */
+    line-height: 1.6;
+    font-size: 1.1em;
+    flex: 1;
+}
+
+/* Graelles i Caixes */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2em; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5em; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5em; }
+.grid-8 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1em; } /* 2 files de 4 */
+
+.card {
+    background: var(--color-bg);
+    padding: 1.5em;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--color-accent);
+}
+
+.card h3 { color: var(--color-primary); margin-bottom: 0.5em; font-size: 1.1em; }
+.card p { font-size: 0.95em; color: var(--color-secondary); }
+
+/* Taules */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.data-table th, .data-table td {
+    border: 1px solid #cbd5e0;
+    padding: 0.8em;
+    text-align: left;
+}
+.data-table th { background: var(--color-light); color: var(--color-primary); }
+
+/* Etiquetes / Badges */
+.label-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1em;
+    text-align: center;
+}
+.label-item .icon { font-size: 2em; display: block; margin-bottom: 0.5em; }
+.label-item strong { display: block; color: var(--color-primary); margin-bottom: 0.3em; }
+
+/* Barra de control inferior (estil original) */
+.controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.6em 1.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    font-size: 0.85em;
+    color: var(--color-secondary);
+    backdrop-filter: blur(5px);
+}
+
+.controls-hints {
+    display: flex;
+    gap: 0.5em;
+    opacity: 0.7;
+}
+
+.controls-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+}
+
+.controls-buttons button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--color-primary);
+    font-size: 1.3em;
+    cursor: pointer;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls-buttons button:hover {
+    background: var(--color-light);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.slide-counter {
+    font-weight: bold;
+    color: var(--color-primary);
+    min-width: 3.5em;
+    text-align: center;
+    margin: 0 0.5em;
+}
+
+/* Ajust per evitar que el contingut quedi tapat per la barra inferior */
+.content-area {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    padding-bottom: 4em; /* Espai per a la barra de control */
+    line-height: 1.6;
+    font-size: 1.1em;
+    flex: 1;
+}
+
+.navigation button:hover {
+    background: var(--color-accent);
+    transform: scale(1.1); /* Petit efecte de creixement en passar el ratolí */
+}
+
+#slide-counter {
+    font-size: 0.85em;
+    font-weight: bold;
+    color: var(--color-primary);
+    background: var(--color-light);
+    padding: 0.3em 0.6em;
+    border-radius: 15px;
+    margin: 0.2em 0;
+}
+.navigation button:hover { background: var(--color-accent); }
+
+/* Enllaços a l'ordre del dia */
+.agenda-card {
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.agenda-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    border-left-color: var(--color-primary);
+}
+
+.agenda-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.agenda-link:hover {
+    color: var(--color-accent);
+}
+
+.agenda-link::after {
+    content: " →";
+    opacity: 0;
+    margin-left: -0.5em;
+    transition: all 0.2s ease;
+}
+
+.agenda-card:hover .agenda-link::after {
+    opacity: 1;
+    margin-left: 0.3em;
+}
+
+/* Format professional per a diapositives de text amb llista */
+.slide-header-professional {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 1.5em;
+    padding-bottom: 1em;
+    border-bottom: 2px solid var(--color-light);
+}
+
+.slide-icon-large {
+    font-size: 4em;
+    line-height: 1;
+}
+
+.slide-header-text {
+    flex: 1;
+}
+
+.slide-title-professional {
+    color: var(--color-primary);
+    font-size: 2.5em;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.slide-subtitle-professional {
+    color: var(--color-secondary);
+    font-size: 1.4em;
+    font-weight: normal;
+    margin: 0.3em 0 0 0;
+    font-style: italic;
+}
+
+.intro-text {
+    font-size: 1.15em;
+    line-height: 1.7;
+    color: var(--color-text);
+    margin-bottom: 1.5em;
+    padding: 1em;
+    background: var(--color-bg);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 4px;
+}
+
+.professional-list {
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
+}
+
+.professional-list li {
+    position: relative;
+    padding: 0.8em 0 0.8em 2em;
+    line-height: 1.6;
+    font-size: 1.1em;
+    border-bottom: 1px solid var(--color-light);
+}
+
+.professional-list li:last-child {
+    border-bottom: none;
+}
+
+.professional-list li::before {
+    content: "▸";
+    position: absolute;
+    left: 0.5em;
+    color: var(--color-accent);
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.professional-list li strong {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* Botó d'enllaç a documents dins de les targetes */
+.doc-link {
+    display: inline-block;
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    background-color: var(--color-light);
+    color: var(--color-primary);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.doc-link:hover {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(44, 82, 130, 0.2);
+}
+
+/* Assegurar que la targeta s'adapta si té enllaç */
+.label-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* ============================================================
+   DIAPOSITIVES AMB FONS BLAU PROFESSIONAL
+   ============================================================ */
+
+/* Fons blau per a tota la diapositiva */
+.slide-bg-blue {
+    background: linear-gradient(135deg, #2c5282 0%, #2b6cb0 50%, #3182ce 100%);
+    color: white;
+}
+
+/* Capçalera adaptada al fons blau */
+.slide-bg-blue .slide-header-professional {
+    border-bottom-color: rgba(255, 255, 255, 0.25);
+}
+
+.slide-bg-blue .slide-title-professional {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.slide-bg-blue .slide-subtitle-professional {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.slide-bg-blue .slide-icon-large {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Quadre d'introducció sobre fons blau */
+.intro-blue {
+    background: rgba(255, 255, 255, 0.12);
+    border-left-color: rgba(255, 255, 255, 0.6);
+    color: white;
+    backdrop-filter: blur(4px);
+}
+
+/* Llista sobre fons blau */
+.list-blue li {
+    color: white;
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+    font-size: 1.15em;
+}
+
+.list-blue li::before {
+    color: #fbd38d; /* Fletxa daurada per contrastar amb el blau */
+}
+
+.list-blue li strong {
+    color: #fbd38d; /* Negretes daurades per destacar */
+}
+
+/* Línia de peu amb informació addicional */
+.footer-info {
+    margin-top: 2em;
+    padding: 1em 1.5em;
+    background: var(--color-bg);
+    border-radius: 8px;
+    font-size: 0.95em;
+    color: var(--color-secondary);
+    text-align: center;
+    border-left: 4px solid var(--color-accent);
+}
+
+.footer-blue {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-left-color: #fbd38d;
+    backdrop-filter: blur(4px);
+    font-weight: 500;
+}
